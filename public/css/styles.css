@@ -37,10 +37,9 @@
 p{
     overflow-wrap: break-word;
 }
-.fifty-chars{
-    width: 50ch;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
 
+.date {
+    float: right;
+    font-style: italic;
+    color: #0d5e1987;
+}

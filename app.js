@@ -22,18 +22,23 @@ mongoose.connect("mongodb://localhost:27017/blogDB",{useNewUrlParser: true});
 
 const postSchema ={
   title: String,
-  content: String
+  content: String,
+  date: String
 };
 
 const Post =mongoose.model("Post",postSchema);
 
-const postArray =[];
+//const postArray =[];
+
 
 app.get("/", function(req,res){
-  res.render("home",{
-    homeContent:homeStartingContent,
-    postContent:postArray
-  });
+  Post.find({}).then(postItem=>{
+    res.render("home",{
+      homeContent:homeStartingContent,
+      postContent:postItem
+    });
+  })
+
 });
 
 app.get("/posts/:topic",function(req,res){
@@ -59,11 +64,13 @@ app.get("/compose", function(req,res){
 
 
 app.post("/compose", function(req,res){
+  const today= new Date();
+  const options= {year: "numeric",month: "short",day: "numeric"};
   const post=new Post({
   title : req.body.composeTitle,
-  content : req.body.composePost
+  content : req.body.composePost,
+  date : today.toLocaleDateString(undefined,options)
   });
-  postArray.push(post);
   post.save();
   res.redirect("/");
 });
