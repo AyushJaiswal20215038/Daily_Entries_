@@ -43,3 +43,13 @@ p{
     font-style: italic;
     color: #0d5e1987;
 }
+
+a.compose {
+    position: fixed;
+    right: 5%;
+    bottom: 70px;
+    /* z-index: 1; */
+    font-size: 7rem;
+    text-decoration: none;
+    background-color: white;
+}
