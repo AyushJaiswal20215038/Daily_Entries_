@@ -1,0 +1,26 @@
+<%-include("partials/header")-%>
+
+<form class="login" action="/register" method="post">
+    <lable>Name</lable>
+    <input type="text" class="form-control" name="userName" value="" required><br>
+    <label>Email</label>
+    <input type="email" class="form-control" name="userEmail" value="" required><br>
+    <label>Password</label>
+    <input type="password" class="form-control" name="userPassword" value="" onchange="onChange()" required><br>
+    <label>Confirm Password</label>
+    <input type="password" class="form-control" name="confirmPassword" value="" onchange="onChange()" required><br>
+    <button class="btn btn-dark" type="submit">Register</button>
+</form>
+<script>
+    function onChange() {
+    const password = document.querySelector('input[name=Password]');
+    const confirm = document.querySelector('input[name=confirmPassword]');
+    if (confirm.value === password.value) {
+        confirm.setCustomValidity('');
+    } else {
+        confirm.setCustomValidity('Passwords do not match');
+    }
+}
+</script>
+
+<%-include("partials/footer")-%>

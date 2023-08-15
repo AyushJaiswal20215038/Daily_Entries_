@@ -53,3 +53,10 @@ a.compose {
     text-decoration: none;
     background-color: white;
 }
+
+.user{
+    color: #1c3c3cb0;
+    border-radius: 10px;
+    background-color: #89a1c247;
+    padding: 0px 5px;
+}

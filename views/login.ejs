@@ -1,0 +1,15 @@
+<%-include("partials/header")-%>
+
+<form class="login" action="/login" method="post">
+    <lable>Name</lable>
+    <input type="text" class="form-control" name="userName" value="" required><br>
+    <label>Email</label>
+    <input type="email" class="form-control" name="userEmail" value="" required><br>
+    <label>Password</label>
+    <input type="password" class="form-control" name="userPassword" value="" required><br>
+    <button class="btn btn-dark" type="submit">Login</button>
+</form>
+<hr>
+If you don't have an account!!!! <a href="/register">Register Here</a>
+
+<%-include("partials/footer")-%>

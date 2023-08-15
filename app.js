@@ -18,27 +18,56 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/blogDB",{useNewUrlParser: true});
+//mongoose.connect("mongodb://localhost:27017/blogDB",{useNewUrlParser: true});
+mongoose.connect("mongodb+srv://ayushjaiswal:Project20215038@cluster0.yod93o4.mongodb.net/blogDB?retryWrites=true&w=majority",{useNewUrlParser:true}).then(()=>{
+console.log("successfully connected");
+}).catch((e)=>{
+console.log("not connected");
+});
+
 
 const postSchema ={
   title: String,
   content: String,
-  date: String
+  date: String,
+  userID: String
 };
 
 const Post =mongoose.model("Post",postSchema);
 
-//const postArray =[];
+const userSchema ={
+  name :String,
+  email :String,
+  password :String
+};
+
+const User =mongoose.model("User",userSchema);
+
+let newUser=null;
 
 
 app.get("/", function(req,res){
-  Post.find({}).then(postItem=>{
+  
+  if(newUser===null){
+    res.redirect("/login");
+  }
+  Post.find({userID:newUser._id}).then(item=>{
+    console.log("Item==="+item);
+    res.render("home",{
+      homeContent: homeStartingContent,
+      name: newUser.name,
+      postContent: item
+    });
+  }).catch(err=>{
+    console.log("err==="+err);
+  });
+/*Post.find({}).then(postItem=>{
     res.render("home",{
       homeContent:homeStartingContent,
       postContent:postItem
     });
-  })
-
+  });
+*/
 });
 
 app.get("/posts/:topic",function(req,res){
@@ -61,19 +90,61 @@ app.get("/contact", function(req,res){
 app.get("/compose", function(req,res){
   res.render("compose");
 });
+app.get("/login", function(req,res){
+  newUser=null;
+  res.render("login");
+});
+app.get("/register",function(req,res){
+  res.render("register");
+});
 
+app.post("/register",function(req,res){
+  User.findOne({email:req.body.userEmail}).then(newUser=>{
+    if(!newUser){
+      const user= new User({
+        name:req.body.userName,
+        email: req.body.userEmail,
+        password: req.body.userPassword
+      });
+      console.log(req.body.userPassword);
+      user.save();
+      newUser=user;
+      res.redirect("/");
+    }else{
+      res.send("This email is already in use.. Please use different one<a href=\"/register\"><h1>retry</h1></a>");
+    }
+  });
 
+});
+
+app.post("/login", function(req,res){
+  User.findOne({email :req.body.userEmail}).then(findUser=>{
+    if(!findUser){
+      res.send("<h3>your Email address does not does not found ...</h3> <h1>Please resister first!!!</h1><a href=\"/register\"><h1>Register Here</h1></a>");
+    }
+    else if(findUser.password!==req.body.userPassword){
+      res.send("<h2>User is already existing and you used incorrect password!!!</h2><br>Please enter correct Password!<a href=\"login\"><h1>Retry</h1></a>");
+    }
+    else{
+      newUser=findUser;
+      res.redirect("/");
+    }
+  });
+
+});
 app.post("/compose", function(req,res){
   const today= new Date();
   const options= {year: "numeric",month: "short",day: "numeric"};
   const post=new Post({
   title : req.body.composeTitle,
   content : req.body.composePost,
-  date : today.toLocaleDateString(undefined,options)
+  date : today.toLocaleDateString(undefined,options),
+  userID: newUser._id
   });
   post.save();
   res.redirect("/");
 });
+
 
 
 
